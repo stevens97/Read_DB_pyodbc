@@ -1,4 +1,4 @@
-# Read Database With Progress Bar
+# Read Database with pyodbc
 
 What this program does:
 ========================================

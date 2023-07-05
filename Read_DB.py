@@ -26,34 +26,36 @@ def CLOSE_CONNECTION(CONNECTION):
 
     return None
 
-# First set up connection
-# ------------------------------------
-
-CONNECTION = SETUP_CONNECTION(DRIVER, SERVER, DATABASE, USERNAME, PASSWORD)
-
-# Count rows in table
-# ------------------------------------
-
-QUERY_COUNT = """
-    SELECT COUNT(*) FROM TABLE
+if __name__ == "__main__":
+    
+    # First set up connection
+    # ------------------------------------
+    
+    CONNECTION = SETUP_CONNECTION(DRIVER, SERVER, DATABASE, USERNAME, PASSWORD)
+    
+    # Count rows in table
+    # ------------------------------------
+    
+    QUERY_COUNT = """
+        SELECT COUNT(*) FROM TABLE
+        """
+    
+    total_rows =  pd.read_sql_query(QUERY_COUNT, CONNECTION).values[0, 0]
+    
+    # Read table from database (in chunks) with loading bar
+    # ------------------------------------------------------
+    
+    # Read table
+    QUERY = """
+        SELECT * FROM TABLE
     """
-
-total_rows =  pd.read_sql_query(QUERY_COUNT, CONNECTION).values[0, 0]
-
-# Read table from database (in chunks) with loading bar
-# ------------------------------------------------------
-
-# Read table
-QUERY = """
-    SELECT * FROM TABLE
-"""
-
-# Chunk size should be set to desired value
-chunks = pd.read_sql_query(QUERY, CONNECTION, chunksize=1000)
-# Concatenate results to final dataframe
-DF = tqdm(chunks, total=total_rows/rows_in_chunk)
-DF = pd.concat(DF)
-
-# Close connection
-# ------------------------------------------------------
-CLOSE_CONNECTION(CONNECTION)
+    
+    # Chunk size should be set to desired value
+    chunks = pd.read_sql_query(QUERY, CONNECTION, chunksize=1000)
+    # Concatenate results to final dataframe
+    DF = tqdm(chunks, total=total_rows/rows_in_chunk)
+    DF = pd.concat(DF)
+    
+    # Close connection
+    # ------------------------------------------------------
+    CLOSE_CONNECTION(CONNECTION)
